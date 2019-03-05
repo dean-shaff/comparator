@@ -1,5 +1,6 @@
 import unittest
 
+
 class TestMultiDomainComparator(unittest.TestCase):
     pass
 
