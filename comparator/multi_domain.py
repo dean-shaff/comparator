@@ -40,10 +40,12 @@ class MultiDomainComparator(SingleDomainComparator):
         return _on_change
 
     def __call__(self, *args):
+        ret = []
         for domain_name in self._domains:
             domain = self._domains[domain_name]
-            domain(*args)
-
+            ret.append(domain(*args))
+        return ret
+        
     def __getattr__(self, attr: str) -> SingleDomainComparator:
         if attr in self._domains:
             return self._domains[attr]
