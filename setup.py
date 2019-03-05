@@ -10,7 +10,7 @@ setup(
     description="Compare and contrast time series",
     author="Dean Shaff",
     author_email="dean.shaff@gmail.com",
-    url="https://github.com/dean-shaff/pfb-channelizer",
+    url="https://github.com/dean-shaff/comparator",
     packages=["comparator"],
     requires=[
         "numpy",
