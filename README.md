@@ -1,4 +1,9 @@
+## Comparator
+
+[![Build Status](https://travis-ci.org/dean-shaff/comparator.svg?branch=master)](https://travis-ci.org/dean-shaff/comparator)
+
 ### Usage
+
 
 ```python
 c = MultiDomainComparator()
