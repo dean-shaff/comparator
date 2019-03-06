@@ -36,21 +36,27 @@ class SingleDomainComparator:
             rep = self._representations[self._current_representation]
         else:
             rep = (lambda a: a, )
-        res = [[] for arr in arrays]
-        for i in range(n_arrays):
-            for j in range(n_arrays):
-                if i > j:
-                    continue
-                elif i == j:
-                    a = arrays[i]
-                    for rep_fn in rep:
-                        a_rep = rep_fn(a)
-                        res[i].append(self.operate(a_rep))
-                else:
-                    a, b = arrays[i], arrays[j]
-                    for rep_fn in rep:
-                        a_rep, b_rep = rep_fn(a), rep_fn(b)
-                        res[i].append(self.compare(a_rep, b_rep))
+        # res = [[] for arr in arrays]
+        res = {op_name: [[] for arr in arrays]
+               for op_name in self._operators}
+        for op_name in self._operators:
+            for i in range(n_arrays):
+                for j in range(n_arrays):
+                    if i > j:
+                        res[op_name][i].append(None)
+                    elif i == j:
+                        res[op_name][i].append([])
+                        a = arrays[i]
+                        for rep_fn in rep:
+                            a_rep = rep_fn(a)
+                            res[op_name][i][-1].append(self.operate(a_rep))
+                    else:
+                        res[op_name][i].append([])
+                        a, b = arrays[i], arrays[j]
+                        for rep_fn in rep:
+                            a_rep, b_rep = rep_fn(a), rep_fn(b)
+                            res[op_name][i][-1].append(
+                                self.compare(a_rep, b_rep, op_name))
 
         return res
 
@@ -68,24 +74,23 @@ class SingleDomainComparator:
         return transformed
 
     def operate(self, a: np.ndarray) -> dict:
-        res_dict = {}
+        res = [a]
+        res.append({})
         for prod_name in self._products:
             prod = self._products[prod_name]
-            res_dict[prod_name] = prod(a)
-        return res_dict
+            res[1][prod_name] = prod(a)
+        return res
 
-    def compare(self, a: np.ndarray, b: np.ndarray) -> dict:
-        res_dict = {}
-        for op_name in self._operators:
-            res_dict[op_name] = []
-            op = self._operators[op_name]
-            res = op(a, b)
-            res_dict[op_name].append(res)
-            res_dict[op_name].append({})
-            for prod_name in self._products:
-                prod = self._products[prod_name]
-                res_dict[op_name][1][prod_name] = prod(res)
-        return res_dict
+    def compare(self, a: np.ndarray, b: np.ndarray, op_name: str) -> dict:
+        res = []
+        op = self._operators[op_name]
+        res_op = op(a, b)
+        res.append(res_op)
+        res.append({})
+        for prod_name in self._products:
+            prod = self._products[prod_name]
+            res[1][prod_name] = prod(res_op)
+        return res
 
     def __getattr__(self, attr: str):
         if attr in self._representations:
@@ -122,15 +127,16 @@ class TimeDomainComparator(SingleDomainComparator):
         intermediate = super(TimeDomainComparator, self).transform(*arrays)
         transformed = [intermediate[0]]
         for arr in intermediate[1:]:
-            transformed.append(self.time_align(transformed[0], arr)[-1])
+            offset = self.get_time_delay(transformed[0], arr)
+            transformed.append(np.roll(arr, abs(offset)))
 
         return transformed
 
-    def time_align(self,
-                   a: np.ndarray,
-                   b: np.ndarray) -> typing.Tuple[np.ndarray]:
+    def get_time_delay(self,
+                       a: np.ndarray,
+                       b: np.ndarray) -> int:
         """
-        Align signal b with signal a in time.
+        Get the number of units of delay between a and b
         """
         a = a / np.amax(a)
         b = b / np.amax(b)
@@ -138,7 +144,8 @@ class TimeDomainComparator(SingleDomainComparator):
         mid_idx = int(xcorr.shape[0] // 2)
         max_arg = np.argmax(xcorr)
         offset = max_arg - mid_idx
-        return a, np.roll(b, abs(offset))
+        return offset
+        # return a, np.roll(b, abs(offset))
 
 
 class FrequencyDomainComparator(SingleDomainComparator):

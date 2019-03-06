@@ -45,7 +45,7 @@ class MultiDomainComparator(SingleDomainComparator):
             domain = self._domains[domain_name]
             ret.append(domain(*args))
         return ret
-        
+
     def __getattr__(self, attr: str) -> SingleDomainComparator:
         if attr in self._domains:
             return self._domains[attr]
