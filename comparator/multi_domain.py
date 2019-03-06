@@ -15,6 +15,7 @@ class MultiDomainComparator(SingleDomainComparator):
         self._domains = domains
         self._operators.on(self.on_change("operators"))
         self._products.on(self.on_change("products"))
+        self._operation_domain.on(self.on_change("domain"))
 
     def add_domain(self, *args: tuple, **kwargs: dict):
         if hasattr(args[0], "_name") and hasattr(args[0], "_transforms"):
