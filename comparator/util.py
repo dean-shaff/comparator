@@ -1,5 +1,7 @@
+import json
 import typing
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 __all__ = [
@@ -34,3 +36,11 @@ def corner_plot(comparator_result: dict) -> typing.Tuple[list, list]:
         fig_objs.append(fig)
         axes_objs.append(axes)
     return fig_objs, axes_objs
+
+
+class NumpyEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NumpyEncoder, self).default(obj)

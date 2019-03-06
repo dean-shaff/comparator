@@ -1,4 +1,5 @@
 import unittest
+import json
 
 import numpy as np
 
@@ -28,6 +29,16 @@ class TestCornerPlot(unittest.TestCase):
         self.assertTrue(len(axes) == 2)
 
         # plt.show()
+
+
+class TestNumpyEncoder(unittest.TestCase):
+
+    def test_default(self):
+
+        test = {"obj": np.arange(10)}
+        expected_dumps = "{\"obj\": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}"
+        test_dumps = json.dumps(test, cls=util.NumpyEncoder)
+        self.assertTrue(test_dumps == expected_dumps)
 
 
 if __name__ == "__main__":
