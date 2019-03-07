@@ -24,7 +24,6 @@ def corner_plot(comparator_result: dict) -> typing.Tuple[list, list]:
         for i in range(rows):
             for j in range(cols):
                 sub_res_op = res_op[i][j]
-                print(sub_res_op)
                 for z in range(n_z):
                     ax = axes[(z*rows) + j][i]
                     if j != rows - 1:
