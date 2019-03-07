@@ -1,4 +1,5 @@
 import typing
+import copy
 
 import numpy as np
 import scipy.signal
@@ -6,6 +7,12 @@ import scipy.signal
 from .trackable_dict import TrackableDict
 
 vector_function = typing.Callable[[np.ndarray], np.ndarray]
+
+__all__ = [
+    "SingleDomainComparator",
+    "TimeDomainComparator",
+    "FrequencyDomainComparator"
+]
 
 
 class SingleDomainComparator:
@@ -27,7 +34,8 @@ class SingleDomainComparator:
         })
         self._current_representation = "cartesian"
 
-    def __call__(self, *arrays: typing.Tuple[np.ndarray]) -> list:
+    def __call__(self,
+                 *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
 
         arrays = self.transform(*arrays)
         n_arrays = len(arrays)
@@ -36,29 +44,34 @@ class SingleDomainComparator:
             rep = self._representations[self._current_representation]
         else:
             rep = (lambda a: a, )
-        # res = [[] for arr in arrays]
-        res = {op_name: [[] for arr in arrays]
-               for op_name in self._operators}
+        res_op = {
+            op_name: [[None for j in range(n_arrays)] for i in range(n_arrays)]
+            for op_name in self._operators
+        }
+        res_prod = copy.deepcopy(res_op)
         for op_name in self._operators:
             for i in range(n_arrays):
                 for j in range(n_arrays):
                     if i > j:
-                        res[op_name][i].append(None)
-                    elif i == j:
-                        res[op_name][i].append([])
+                        continue
+                    res_op[op_name][i][j] = []
+                    res_prod[op_name][i][j] = []
+                    if i == j:
                         a = arrays[i]
                         for rep_fn in rep:
                             a_rep = rep_fn(a)
-                            res[op_name][i][-1].append(self.operate(a_rep))
+                            single_array_op = self.operate(a_rep)
+                            res_op[op_name][i][j].append(single_array_op[0])
+                            res_prod[op_name][i][j].append(single_array_op[1])
                     else:
-                        res[op_name][i].append([])
                         a, b = arrays[i], arrays[j]
                         for rep_fn in rep:
                             a_rep, b_rep = rep_fn(a), rep_fn(b)
-                            res[op_name][i][-1].append(
-                                self.compare(a_rep, b_rep, op_name))
+                            two_array_op = self.compare(a_rep, b_rep, op_name)
+                            res_op[op_name][i][j].append(two_array_op[0])
+                            res_prod[op_name][i][j].append(two_array_op[1])
 
-        return res
+        return res_op, res_prod
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
 
@@ -73,24 +86,21 @@ class SingleDomainComparator:
 
         return transformed
 
-    def operate(self, a: np.ndarray) -> dict:
-        res = [a]
-        res.append({})
+    def operate(self, a: np.ndarray) -> tuple:
+        res_prod = {}
         for prod_name in self._products:
             prod = self._products[prod_name]
-            res[1][prod_name] = prod(a)
-        return res
+            res_prod[prod_name] = prod(a)
+        return a, res_prod
 
-    def compare(self, a: np.ndarray, b: np.ndarray, op_name: str) -> dict:
-        res = []
+    def compare(self, a: np.ndarray, b: np.ndarray, op_name: str) -> tuple:
         op = self._operators[op_name]
         res_op = op(a, b)
-        res.append(res_op)
-        res.append({})
+        res_prod = {}
         for prod_name in self._products:
             prod = self._products[prod_name]
-            res[1][prod_name] = prod(res_op)
-        return res
+            res_prod[prod_name] = prod(res_op)
+        return res_op, res_prod
 
     def __getattr__(self, attr: str):
         if attr in self._representations:

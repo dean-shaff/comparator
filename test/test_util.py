@@ -2,6 +2,7 @@ import unittest
 import json
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 from comparator import util
 from comparator.single_domain import SingleDomainComparator
@@ -19,11 +20,19 @@ class TestCornerPlot(unittest.TestCase):
         comp.operators["mul"] = np.multiply
 
         # dat = [np.ones(n)*i for i in range(n_plots)]
-        dat = [np.random.rand(n) for i in range(n_plots)]
+        dat_real = [np.random.rand(n) for i in range(n_plots)]
 
-        res = comp(*dat)
+        res_op, res_prod = comp(*dat_real)
+        figs, axes = util.corner_plot(res_op)
 
-        figs, axes = util.corner_plot(res)
+        self.assertTrue(len(figs) == 2)
+        self.assertTrue(len(axes) == 2)
+
+        dat_complex = [np.random.rand(n) + 1j*np.random.rand(n)
+                       for i in range(n_plots)]
+
+        res_op, res_prod = comp(*dat_complex)
+        figs, axes = util.corner_plot(res_op)
 
         self.assertTrue(len(figs) == 2)
         self.assertTrue(len(axes) == 2)

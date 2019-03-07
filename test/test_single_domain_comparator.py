@@ -58,25 +58,37 @@ class TestSingleDomainComparator(unittest.TestCase):
         self.assertTrue(np.allclose(transformed[0], np.fft.fft(a)))
 
     def test_call(self):
-        self.comparator_time_domain.operators["diff"] = \
-            lambda a, b: np.abs(a - b)
-        self.comparator_time_domain.products["mean"] = np.mean
-        self.comparator_freq_domain.operators["diff"] = \
-            lambda a, b: np.abs(a - b)
-        self.comparator_freq_domain.products["mean"] = np.mean
-        # test with real data
-        a, b, c = [np.random.rand(4) for i in range(3)]
-        res_time_real = self.comparator_time_domain(a, b, c)
-        res_freq_real = self.comparator_freq_domain(a, b, c)
+        comp_time, comp_freq = self.comparator_time_domain, \
+            self.comparator_freq_domain
 
-        # # test with complex data
-        d, e, f = [np.random.rand(10) + 1j*np.random.rand(10)
-                   for i in range(3)]
-        res_time_polar = self.comparator_time_domain.polar(a, b, c)
-        res_freq_polar = self.comparator_freq_domain.polar(a, b, c)
-        #
-        res_time_cart = self.comparator_time_domain.cartesian(a, b, c)
-        res_freq_cart = self.comparator_freq_domain.cartesian(a, b, c)
+        def test_res(self, comparator_result_tuple, nelem, ndim):
+            self.assertTrue(isinstance(comparator_result_tuple, tuple))
+            for obj in comparator_result_tuple:
+                self.assertTrue("diff" in obj)
+                self.assertTrue(len(obj["diff"]) == nelem)
+                self.assertTrue(len(obj["diff"][0]) == nelem)
+                self.assertTrue(len(obj["diff"][0][0]) == ndim)
+
+        comp_time.operators["diff"] = \
+            lambda a, b: np.abs(a - b)
+        comp_time.products["mean"] = np.mean
+        comp_freq.operators["diff"] = \
+            lambda a, b: np.abs(a - b)
+        comp_freq.products["mean"] = np.mean
+        # test with real data
+        nelem = 3
+        test_real = [np.random.rand(4) for i in range(nelem)]
+        test_res(self, comp_time(*test_real), nelem, 1)
+        test_res(self, self.comparator_freq_domain(*test_real), nelem, 2)
+
+        # test with complex data
+        test_complex = [np.random.rand(10) + 1j*np.random.rand(10)
+                        for i in range(nelem)]
+
+        test_res(self, comp_time.polar(*test_complex), nelem, 2)
+        test_res(self, comp_freq.polar(*test_complex), nelem, 2)
+        test_res(self, comp_time.cartesian(*test_complex), nelem, 2)
+        test_res(self, comp_freq.cartesian(*test_complex), nelem, 2)
 
 
 class TestTimeDomainComparator(unittest.TestCase):
