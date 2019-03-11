@@ -5,6 +5,11 @@ from .single_domain import (
     TimeDomainComparator
 )
 
+__all__ = [
+    "MultiDomainComparator",
+    "TimeFreqDomainComparator"
+]
+
 
 class MultiDomainComparator(SingleDomainComparator):
 

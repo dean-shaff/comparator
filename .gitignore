@@ -1,2 +1,4 @@
-*.dump 
+*.dump
 comparator.egg-info/
+comparator/__pycache__
+test/__pycache__
