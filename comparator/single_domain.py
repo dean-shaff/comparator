@@ -166,9 +166,11 @@ class FrequencyDomainComparator(TimeDomainComparator):
     def __init__(self, name: str = "frequency", fft_size: int = 1024):
         super(FrequencyDomainComparator, self).__init__(
             name=name,
-            forward_transform=np.fft.fft,
-            inverse_transform=np.fft.ifft
         )
+        self._transforms = {
+            "forward": np.fft.fft,
+            "inverse": np.fft.ifft
+        }
         self._operator_domain = slice(0, fft_size)
 
     def set_fft_size(self, fft_size: int):

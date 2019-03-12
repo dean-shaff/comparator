@@ -4,7 +4,8 @@ import numpy as np
 
 from comparator.single_domain import (
     SingleDomainComparator,
-    TimeDomainComparator
+    TimeDomainComparator,
+    FrequencyDomainComparator
 )
 
 
@@ -103,6 +104,12 @@ class TestTimeDomainComparator(unittest.TestCase):
         a, b = np.sin(x), np.sin(x + offset_expected)
         offset = self.comp.get_time_delay(a, b)
         self.assertTrue(offset == offset_expected)
+
+
+class TestFrequencyDomainComparator(unittest.TestCase):
+
+    def test_init(self):
+        FrequencyDomainComparator()
 
 
 if __name__ == "__main__":
