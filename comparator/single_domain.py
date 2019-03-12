@@ -102,6 +102,11 @@ class SingleDomainComparator:
             res_prod[prod_name] = prod(res_op)
         return res_op, res_prod
 
+    # def laze(self, *args):
+    #     """
+    #     It could be that argu
+    #     """
+
     def __getattr__(self, attr: str):
         if attr in self._representations:
             self._current_representation = attr
@@ -134,13 +139,11 @@ class TimeDomainComparator(SingleDomainComparator):
         super(TimeDomainComparator, self).__init__(name)
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
-        intermediate = super(TimeDomainComparator, self).transform(*arrays)
-        transformed = [intermediate[0]]
-        for arr in intermediate[1:]:
+        transformed = [arrays[0]]
+        for arr in arrays[1:]:
             offset = self.get_time_delay(transformed[0], arr)
             transformed.append(np.roll(arr, abs(offset)))
-
-        return transformed
+        return super(TimeDomainComparator, self).transform(*transformed)
 
     def get_time_delay(self,
                        a: np.ndarray,
@@ -158,7 +161,7 @@ class TimeDomainComparator(SingleDomainComparator):
         # return a, np.roll(b, abs(offset))
 
 
-class FrequencyDomainComparator(SingleDomainComparator):
+class FrequencyDomainComparator(TimeDomainComparator):
 
     def __init__(self, name: str = "frequency", fft_size: int = 1024):
         super(FrequencyDomainComparator, self).__init__(
