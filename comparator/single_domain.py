@@ -1,5 +1,6 @@
 import typing
 import copy
+import logging
 
 import numpy as np
 import scipy.signal
@@ -13,6 +14,8 @@ __all__ = [
     "TimeDomainComparator",
     "FrequencyDomainComparator"
 ]
+
+module_logger = logging.getLogger(__name__)
 
 
 class SingleDomainComparator:
@@ -140,8 +143,11 @@ class TimeDomainComparator(SingleDomainComparator):
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
         transformed = [arrays[0]]
-        for arr in arrays[1:]:
+        for i, arr in enumerate(arrays[1:]):
             offset = self.get_time_delay(transformed[0], arr)
+            module_logger.debug(
+                (f"TimeDomainComparator.transform: "
+                 f"offset for arr[{i}]: {offset}"))
             transformed.append(np.roll(arr, abs(offset)))
         return super(TimeDomainComparator, self).transform(*transformed)
 
