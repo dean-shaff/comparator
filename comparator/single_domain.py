@@ -149,6 +149,14 @@ class SingleDomainComparator:
     def domain(self, arr: list):
         self._operation_domain = slice(*arr)
 
+    @property
+    def accumulate_prod(self):
+        return self.accumulate_prod
+
+    @property
+    def accumulate_op(self):
+        return self._accumulate_op
+
 
 class TimeDomainComparator(SingleDomainComparator):
 
