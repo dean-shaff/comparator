@@ -1,4 +1,4 @@
-__version__ = "0.3.3"
+__version__ = "0.4.0"
 
 from .single_domain import (
     SingleDomainComparator,
@@ -13,6 +13,9 @@ from .util import (
     corner_plot,
     NumpyEncoder
 )
+from .product_result import (
+    ComparatorProductResult
+)
 
 __all__ = [
     "SingleDomainComparator",
@@ -21,5 +24,6 @@ __all__ = [
     "MultiDomainComparator",
     "TimeFreqDomainComparator",
     "corner_plot",
-    "NumpyEncoder"
+    "NumpyEncoder",
+    "ComparatorProductResult"
 ]

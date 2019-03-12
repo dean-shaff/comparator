@@ -6,6 +6,7 @@ import numpy as np
 import scipy.signal
 
 from .trackable_dict import TrackableDict
+from .product_result import ComparatorProductResult
 
 vector_function = typing.Callable[[np.ndarray], np.ndarray]
 
@@ -36,6 +37,8 @@ class SingleDomainComparator:
             "polar": (np.abs, np.angle)
         })
         self._current_representation = "cartesian"
+        self._accumulate_op = []
+        self._accumulate_prod = []
 
     def __call__(self,
                  *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
@@ -74,7 +77,18 @@ class SingleDomainComparator:
                             res_op[op_name][i][j].append(two_array_op[0])
                             res_prod[op_name][i][j].append(two_array_op[1])
 
+        res_prod = {op_name: ComparatorProductResult(res_prod[op_name])}
+
         return res_op, res_prod
+
+    def accumulate(self,
+                   *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
+
+        res_op, res_prod = self.__call__(*arrays)
+        self._accumulate_op.append(res_op)
+        self._accumulate_prod.append(res_prod)
+
+        return self._accumulate_op, self._accumulate_prod
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
 
