@@ -16,8 +16,8 @@ class TestCornerPlot(unittest.TestCase):
         n_plots = 4
 
         comp = SingleDomainComparator("test_corner_plot")
-        comp.operators["diff"] = np.subtract
-        comp.operators["mul"] = np.multiply
+        comp.operators["diff"] = lambda a, b: a - b
+        comp.operators["mul"] = lambda a, b: a*b
 
         # dat = [np.ones(n)*i for i in range(n_plots)]
         dat_real = [np.random.rand(n) for i in range(n_plots)]

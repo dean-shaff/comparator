@@ -19,7 +19,7 @@ class TestMultiDomainComparator(unittest.TestCase):
         )
 
     def test_add_operator(self):
-        self.multi_domain_comparator.operators["diff"] = np.subtract
+        self.multi_domain_comparator.operators["diff"] = lambda a, b: a - b
         self.assertTrue("diff" in
                         self.multi_domain_comparator.domain0.operators)
         self.assertTrue("diff" in
@@ -34,7 +34,7 @@ class TestMultiDomainComparator(unittest.TestCase):
 
     def test_call(self):
         a, b, c = [np.random.rand(10) for i in range(3)]
-        self.multi_domain_comparator.operators["diff"] = np.subtract
+        self.multi_domain_comparator.operators["diff"] = lambda a, b: a - b
         ret = self.multi_domain_comparator(a, b, c)
         self.assertTrue(len(ret) == 2)
 

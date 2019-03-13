@@ -1,5 +1,4 @@
 import unittest
-import random
 
 from comparator.product_result import (
     ComparatorProductResult

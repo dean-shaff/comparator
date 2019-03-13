@@ -19,36 +19,34 @@ class TestSingleDomainComparator(unittest.TestCase):
             inverse_transform=np.fft.ifft
         )
 
+    def test_get_operator_products(self):
+
+        n_arrays = 3
+        arrays = [np.random.rand(4) for i in range(n_arrays)]
+        res_op, res_prod = self.comparator_time_domain.get_operator_products(
+            lambda a: a, arrays)
+        for i in range(n_arrays):
+            self.assertTrue(
+                np.allclose(res_op[i][0], arrays[i]))
+        res_op, res_prod = self.comparator_time_domain.get_operator_products(
+            lambda a, b: a + b, arrays)
+        for i in range(n_arrays):
+            for j in range(n_arrays):
+                self.assertTrue(
+                    np.allclose(res_op[i][j][0], arrays[i] + arrays[j]))
+
+    # @unittest.skip("")
     def test_set_operator(self):
         self.comparator_time_domain.operators["diff"] = \
             lambda a, b: np.abs(a - b)
         self.assertTrue("diff" in self.comparator_time_domain._operators)
 
+    # @unittest.skip("")
     def test_set_product(self):
         self.comparator_time_domain.products["mean"] = np.mean
         self.assertTrue("mean" in self.comparator_time_domain._products)
 
-    def test_operate(self):
-        a = np.random.rand(10)
-        self.comparator_time_domain.products["mean"] = np.mean
-        self.comparator_time_domain.products["max"] = np.amax
-        res = self.comparator_time_domain.operate(a)
-        self.assertTrue("mean" in res[1])
-        self.assertTrue("max" in res[1])
-        self.assertTrue(res[1]["mean"] == np.mean(a))
-        self.assertTrue(res[1]["max"] == np.amax(a))
-
-    def test_compare(self):
-        a = np.random.rand(10)
-        b = np.random.rand(10)
-        self.comparator_time_domain.operators["diff"] = \
-            lambda a, b: np.abs(a - b)
-        self.comparator_time_domain.products["mean"] = np.mean
-        self.comparator_time_domain.products["max"] = np.amax
-
-        res = self.comparator_time_domain.compare(a, b, "diff")
-        self.assertTrue(np.allclose(np.abs(a - b), res[0]))
-
+    # @unittest.skip("")
     def test_transform(self):
         a, b, c = [np.arange(10 + i) for i in range(3)]
         transformed = self.comparator_time_domain.transform(a, b, c)
@@ -58,6 +56,7 @@ class TestSingleDomainComparator(unittest.TestCase):
         transformed = self.comparator_freq_domain.transform(a, b, c)
         self.assertTrue(np.allclose(transformed[0], np.fft.fft(a)))
 
+    # @unittest.skip("")
     def test_call(self):
         comp_time, comp_freq = self.comparator_time_domain, \
             self.comparator_freq_domain

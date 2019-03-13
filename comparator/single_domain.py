@@ -1,6 +1,8 @@
 import typing
 import copy
 import logging
+import inspect
+import functools
 
 import numpy as np
 import scipy.signal
@@ -44,38 +46,13 @@ class SingleDomainComparator:
                  *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
 
         arrays = self.transform(*arrays)
-        n_arrays = len(arrays)
-        iscomplex = np.iscomplexobj(arrays[0])
-        if iscomplex:
-            rep = self._representations[self._current_representation]
-        else:
-            rep = (lambda a: a, )
-        res_op = {
-            op_name: [[None for j in range(n_arrays)] for i in range(n_arrays)]
-            for op_name in self._operators
-        }
-        res_prod = copy.deepcopy(res_op)
+        res_op = {}
+        res_prod = {}
         for op_name in self._operators:
-            for i in range(n_arrays):
-                for j in range(n_arrays):
-                    if i > j:
-                        continue
-                    res_op[op_name][i][j] = []
-                    res_prod[op_name][i][j] = []
-                    if i == j:
-                        a = arrays[i]
-                        for rep_fn in rep:
-                            a_rep = rep_fn(a)
-                            single_array_op = self.operate(a_rep)
-                            res_op[op_name][i][j].append(single_array_op[0])
-                            res_prod[op_name][i][j].append(single_array_op[1])
-                    else:
-                        a, b = arrays[i], arrays[j]
-                        for rep_fn in rep:
-                            a_rep, b_rep = rep_fn(a), rep_fn(b)
-                            two_array_op = self.compare(a_rep, b_rep, op_name)
-                            res_op[op_name][i][j].append(two_array_op[0])
-                            res_prod[op_name][i][j].append(two_array_op[1])
+            op = self._operators[op_name]
+            _res_op, _res_prod = self.get_operator_products(op, arrays)
+            res_op[op_name] = _res_op
+            res_prod[op_name] = _res_prod
 
         res_prod = {op_name: ComparatorProductResult(res_prod[op_name])}
 
@@ -103,26 +80,46 @@ class SingleDomainComparator:
 
         return transformed
 
-    def operate(self, a: np.ndarray) -> tuple:
+    def get_operator_products(
+        self,
+        op: typing.Callable,
+        arrays: typing.Tuple[np.ndarray]
+    ) -> typing.Tuple[list]:
+
+        res_op = []
+        res_prod = []
+        iscomplex = np.iscomplexobj(arrays[0])
+        if iscomplex:
+            rep = self._representations[self._current_representation]
+        else:
+            rep = (lambda a: a, )
+        n_rep = len(rep)
+
+        def _get_operator_products(ops, arrays, res_op, res_prod):
+            for arr in arrays:
+                # new_op = functools.partial(op, arr)
+                sig_op = inspect.signature(ops[0])
+                if len(sig_op.parameters) > 1:
+                    res_op.append([])
+                    res_prod.append([])
+                    new_ops = [functools.partial(ops[j], rep[j](arr))
+                               for j in range(n_rep)]
+                    _get_operator_products(
+                        new_ops, arrays, res_op[-1], res_prod[-1])
+                else:
+                    res_op.append([ops[j](rep[j](arr)) for j in range(n_rep)])
+                    res_prod.append([self.get_products(a) for a in res_op[-1]])
+
+        _get_operator_products(
+            [op for i in range(n_rep)], arrays, res_op, res_prod)
+        return res_op, res_prod
+
+    def get_products(self, a: np.ndarray) -> dict:
         res_prod = {}
         for prod_name in self._products:
             prod = self._products[prod_name]
             res_prod[prod_name] = prod(a)
-        return a, res_prod
-
-    def compare(self, a: np.ndarray, b: np.ndarray, op_name: str) -> tuple:
-        op = self._operators[op_name]
-        res_op = op(a, b)
-        res_prod = {}
-        for prod_name in self._products:
-            prod = self._products[prod_name]
-            res_prod[prod_name] = prod(res_op)
-        return res_op, res_prod
-
-    # def laze(self, *args):
-    #     """
-    #     It could be that argu
-    #     """
+        return res_prod
 
     def __getattr__(self, attr: str):
         if attr in self._representations:
