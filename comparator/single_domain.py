@@ -34,6 +34,7 @@ class SingleDomainComparator:
         self._operation_domain = slice(0, None)  # get whole array
         self._operators = TrackableDict({})
         self._products = TrackableDict({})
+        self._accumulator = lambda a: a
         self._representations = TrackableDict({
             "cartesian": (np.real, np.imag),
             "polar": (np.abs, np.angle)
@@ -44,23 +45,24 @@ class SingleDomainComparator:
 
     def __call__(self,
                  *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
-
+        module_logger.debug(
+            f"SingleDomainComparator.__call__: len(arrays): {len(arrays)}")
         arrays = self.transform(*arrays)
         res_op = {}
         res_prod = {}
         for op_name in self._operators:
+            module_logger.debug('')
             op = self._operators[op_name]
             _res_op, _res_prod = self.get_operator_products(op, arrays)
             res_op[op_name] = _res_op
-            res_prod[op_name] = _res_prod
-
-        res_prod = {op_name: ComparatorProductResult(res_prod[op_name])}
+            res_prod[op_name] = ComparatorProductResult(_res_prod)
 
         return res_op, res_prod
 
     def accumulate(self,
                    *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
-
+        module_logger.debug(
+            f"SingleDomainComparator.accumulate")
         res_op, res_prod = self.__call__(*arrays)
         self._accumulate_op.append(res_op)
         self._accumulate_prod.append(res_prod)
@@ -68,7 +70,8 @@ class SingleDomainComparator:
         return self._accumulate_op, self._accumulate_prod
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
-
+        module_logger.debug(
+            f"SingleDomainComparator.transform")
         min_size = min([a.shape[0] for a in arrays])
         transformed = []
         for arr in arrays:
@@ -137,6 +140,10 @@ class SingleDomainComparator:
     @property
     def products(self):
         return self._products
+
+    @property
+    def accumulator(self):
+        return self._accumulator
 
     @property
     def domain(self):
