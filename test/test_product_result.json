@@ -1,0 +1,180 @@
+{
+  "this": [
+    [
+      {
+        "argmax": 225,
+        "amplitude": 1798.589342254461,
+        "max_power": 3234923.622071334,
+        "total_power": 4194552.109111571
+      },
+      {
+        "argmax": 722,
+        "amplitude": -0.76303198701739,
+        "max_power": 9.865004202692617,
+        "total_power": 10453.79011852153
+      }
+    ],
+    [
+      {
+        "argmax": 2027,
+        "amplitude": 46.61414463395067,
+        "max_power": 456842092.67677593,
+        "total_power": 1072557111.8342557
+      },
+      {
+        "argmax": 1327,
+        "amplitude": 2.2642614645301533,
+        "max_power": 9.861533562929488,
+        "total_power": 6925.291199628731
+      }
+    ],
+    [
+      {
+        "argmax": 2027,
+        "amplitude": 95465.76821033098,
+        "max_power": 1916134616682572,
+        "total_power": 4498630584394866
+      },
+      {
+        "argmax": 1327,
+        "amplitude": 2.2642614645301533,
+        "max_power": 9.861533562929488,
+        "total_power": 6925.291199628731
+      }
+    ]
+  ],
+  "diff": [
+    [
+      [
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        },
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        }
+      ],
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 1751.9751976205102,
+          "max_power": 456752916.0588645,
+          "total_power": 1075401994.200085
+        },
+        {
+          "argmax": 664,
+          "amplitude": 3.027293451547543,
+          "max_power": 37.95840409255033,
+          "total_power": 17163.404369899043
+        }
+      ],
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 93667.17886807652,
+          "max_power": 1916134434039949.5,
+          "total_power": 4498627824465784.5
+        },
+        {
+          "argmax": 664,
+          "amplitude": 3.027293451547543,
+          "max_power": 37.95840409255033,
+          "total_power": 17163.404369899043
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 1751.9751976205102,
+          "max_power": 456752916.0588645,
+          "total_power": 1075401994.200085
+        },
+        {
+          "argmax": 664,
+          "amplitude": 3.027293451547543,
+          "max_power": 37.95840409255033,
+          "total_power": 17163.404369899043
+        }
+      ],
+      [
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        },
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        }
+      ],
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 95419.15406569703,
+          "max_power": 1914263848313060.5,
+          "total_power": 4494238463021905
+        },
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 93667.17886807652,
+          "max_power": 1916134434039949.5,
+          "total_power": 4498627824465784.5
+        },
+        {
+          "argmax": 664,
+          "amplitude": 3.027293451547543,
+          "max_power": 37.95840409255033,
+          "total_power": 17163.404369899043
+        }
+      ],
+      [
+        {
+          "argmax": 2027,
+          "amplitude": 95419.15406569703,
+          "max_power": 1914263848313060.5,
+          "total_power": 4494238463021905
+        },
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        }
+      ],
+      [
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        },
+        {
+          "argmax": 0,
+          "amplitude": 0,
+          "max_power": 0,
+          "total_power": 0
+        }
+      ]
+    ]
+  ]
+}
