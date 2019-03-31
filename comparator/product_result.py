@@ -1,3 +1,5 @@
+import typing
+
 __all__ = [
     "ComparatorProductResult"
 ]
@@ -16,13 +18,13 @@ class ComparatorProductResult:
         self._product_names = product_names
         self._format_spec = ".4f"
 
-    def get_product_names(self, products):
+    def get_product_names(self, products: list) -> list:
         if hasattr(products[0], "keys"):
             return list(products[0].keys())
         else:
             return self.get_product_names(products[0])
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: typing.Any):
         if hasattr(item, "split"):  # str like
             res = []
             complex_dim = self.complex_dim  # requires a calculation everytime
@@ -74,9 +76,11 @@ class ComparatorProductResult:
                         yield val
 
         if len(self._product_names) == 1:
-            if hasattr(self._products[0][0], "keys"):  # this is the base case of single dimensional data
+            # this is the base case of single dimensional data
+            if hasattr(self._products[0][0], "keys"):
                 for val in single_row(self._products):
                     yield val
+            # higher dimensional data gets passed to _iter
             else:
                 for val in _iter(self._products):
                     yield val
@@ -95,11 +99,11 @@ class ComparatorProductResult:
         else:
             return False
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec: str) -> str:
         self._format_spec = format_spec
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
 
         complex_dim = self.complex_dim
         len_self = len(self)
@@ -134,7 +138,7 @@ class ComparatorProductResult:
         return res_str
 
     @property
-    def products(self):
+    def products(self) -> list:
         return self._products
 
     @property

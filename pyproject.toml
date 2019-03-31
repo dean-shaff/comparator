@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "comparator"
-version = "0.6.0"
+version = "0.6.1"
 description = ""
 authors = ["Dean Shaff <dshaff@swin.edu.au>"]
+
+readme = 'README.md'
 
 [tool.poetry.dependencies]
 python = "^3.6"

@@ -8,4 +8,12 @@ class method.
 - Added __str__ method to `ComparatorProductResult` that prints out the
 contents of the object.
 - Added __format__ method to `ComparatorProductResult` that allows us to
-format `ComparatorProductResult` objects as we please! 
+format `ComparatorProductResult` objects as we please!
+- Fixed bug in `NumpyEncoder` where we couldn't dump `numpy.int64` objects.
+
+### v0.6.1
+
+- Fixed bug in `setup.py` where matplotlib dependency wasn't declared.
+- `util.corner_plot` not working.
+
+### v0.7.0

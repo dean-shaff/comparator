@@ -51,7 +51,6 @@ class SingleDomainComparator:
         res_op = {}
         res_prod = {}
         for op_name in self._operators:
-            module_logger.debug('')
             op = self._operators[op_name]
             _res_op, _res_prod = self.get_operator_products(op, arrays)
             res_op[op_name] = _res_op

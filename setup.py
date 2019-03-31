@@ -15,5 +15,6 @@ setup(
     requires=[
         "numpy",
         "scipy",
+        "matplotlib"
     ]
 )
