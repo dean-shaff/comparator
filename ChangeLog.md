@@ -29,4 +29,8 @@ about the operator result (is it cartesian or polar complex representation, for 
 - Right now, when we supply complex data, the `SingleDomainComparator` object
 breaks the data into cartesian or polar representations. I'd like to be able
 to do operations on complex data as a whole. This would require a bit of work
-to overhaul. 
+to overhaul.
+
+### v0.7.1
+
+- Fixed `test_comparator_import.py` to reflect new API, introduced in v0.7.0
