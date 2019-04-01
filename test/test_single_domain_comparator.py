@@ -46,6 +46,19 @@ class TestSingleDomainComparator(unittest.TestCase):
         self.comparator_time_domain.products["mean"] = np.mean
         self.assertTrue("mean" in self.comparator_time_domain._products)
 
+    def test_set_domain(self):
+        self.comparator_time_domain.domain = [0, 100]
+        self.assertTrue(
+            self.comparator_time_domain._operation_domain.start == 0)
+        self.assertTrue(
+            self.comparator_time_domain._operation_domain.stop == 100)
+
+        self.comparator_time_domain.domain = slice(0, None)
+        self.assertTrue(
+            self.comparator_time_domain._operation_domain.start == 0)
+        self.assertTrue(
+            self.comparator_time_domain._operation_domain.stop is None)
+
     # @unittest.skip("")
     def test_transform(self):
         a, b, c = [np.arange(10 + i) for i in range(3)]

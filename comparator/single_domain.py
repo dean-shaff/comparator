@@ -149,7 +149,10 @@ class SingleDomainComparator:
 
     @domain.setter
     def domain(self, arr: list):
-        self._operation_domain = slice(*arr)
+        if hasattr(arr, "__iter__"):
+            self._operation_domain = slice(*arr)
+        elif hasattr(arr, 'start'):  # means we're passing a slice object
+            self._operation_domain = arr
 
     @property
     def accumulate_prod(self):

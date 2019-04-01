@@ -36,6 +36,8 @@ from comparator import TimeFreqDomainComparator
 
 comp = TimeFreqDomainComparator()
 comp.freq.domain = [0, 2**15]
+# we can also set the domain with a slice object:
+comp.freq.domain = slice(0, None)
 # Alternatively, do the following:
 comp.freq.set_fft_size(2**15)
 

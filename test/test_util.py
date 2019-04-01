@@ -16,7 +16,7 @@ class TestPlotOperatorResult(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if os.environ["COMPARATOR_TEST_PLOT"]:
+        if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.ion()
 
     def setUp(self):
@@ -38,7 +38,7 @@ class TestPlotOperatorResult(unittest.TestCase):
         res_op, res_prod = self.comp(*self.dat_complex)
         figs, axes = util.plot_operator_result(res_op)
 
-        if os.environ["COMPARATOR_TEST_PLOT"]:
+        if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.show()
 
     def test_plot_operator_result_two_argument_operator(self):
@@ -51,7 +51,7 @@ class TestPlotOperatorResult(unittest.TestCase):
         res_op, res_prod = self.comp(*self.dat_complex)
         figs, axes = util.plot_operator_result(res_op)
 
-        if os.environ["COMPARATOR_TEST_PLOT"]:
+        if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.show()
 
     def test_plot_operator_result_three_argument_operator(self):
@@ -64,7 +64,7 @@ class TestPlotOperatorResult(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if os.environ["COMPARATOR_TEST_PLOT"]:
+        if os.environ.get("COMPARATOR_TEST_PLOT", None):
             input(">>> ")
 
 

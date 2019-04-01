@@ -34,3 +34,8 @@ to overhaul.
 ### v0.7.1
 
 - Fixed `test_comparator_import.py` to reflect new API, introduced in v0.7.0
+
+### v0.7.2
+
+- Can now set the operation domain directly with a `slice` object.
+- Added unit test to check for setting the operation domain. 
