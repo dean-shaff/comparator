@@ -10,7 +10,7 @@ class TestComparatorImport(unittest.TestCase):
             FrequencyDomainComparator,
             MultiDomainComparator,
             TimeFreqDomainComparator,
-            corner_plot,
+            plot_operator_result,
             NumpyEncoder
         )
 
