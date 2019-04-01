@@ -1,5 +1,7 @@
 import unittest
+import logging
 import json
+import os
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,37 +9,63 @@ import matplotlib.pyplot as plt
 from comparator import util
 from comparator.single_domain import SingleDomainComparator
 
+test_dir = os.path.dirname(os.path.abspath(__file__))
 
-class TestCornerPlot(unittest.TestCase):
 
-    def test_corner_plot(self):
+class TestPlotOperatorResult(unittest.TestCase):
 
-        n = 100
-        n_plots = 4
+    @classmethod
+    def setUpClass(cls):
+        if os.environ["COMPARATOR_TEST_PLOT"]:
+            plt.ion()
 
-        comp = SingleDomainComparator("test_corner_plot")
-        comp.operators["diff"] = lambda a, b: a - b
-        comp.operators["mul"] = lambda a, b: a*b
+    def setUp(self):
+        self.comp = SingleDomainComparator("TestCornerPlot")
+        self.n_dat = 100
+        self.n_plots = 4
+        self.dat_real = [np.random.rand(self.n_dat)
+                         for i in range(self.n_plots)]
+        self.dat_complex = [(np.random.rand(self.n_dat) +
+                             1j*np.random.rand(self.n_dat))
+                            for i in range(self.n_plots)]
 
-        # dat = [np.ones(n)*i for i in range(n_plots)]
-        dat_real = [np.random.rand(n) for i in range(n_plots)]
+    def test_plot_operator_result_one_argument_operator(self):
+        self.comp.operators["this"] = lambda a: a
 
-        res_op, res_prod = comp(*dat_real)
-        figs, axes = util.corner_plot(res_op)
+        res_op, res_prod = self.comp(*self.dat_real)
+        figs, axes = util.plot_operator_result(res_op)
 
-        self.assertTrue(len(figs) == 2)
-        self.assertTrue(len(axes) == 2)
+        res_op, res_prod = self.comp(*self.dat_complex)
+        figs, axes = util.plot_operator_result(res_op)
 
-        dat_complex = [np.random.rand(n) + 1j*np.random.rand(n)
-                       for i in range(n_plots)]
+        if os.environ["COMPARATOR_TEST_PLOT"]:
+            plt.show()
 
-        res_op, res_prod = comp(*dat_complex)
-        figs, axes = util.corner_plot(res_op)
+    def test_plot_operator_result_two_argument_operator(self):
 
-        self.assertTrue(len(figs) == 2)
-        self.assertTrue(len(axes) == 2)
+        self.comp.operators["diff"] = lambda a, b: a - b
 
-        # plt.show()
+        res_op, res_prod = self.comp(*self.dat_real)
+        figs, axes = util.plot_operator_result(res_op)
+
+        res_op, res_prod = self.comp(*self.dat_complex)
+        figs, axes = util.plot_operator_result(res_op)
+
+        if os.environ["COMPARATOR_TEST_PLOT"]:
+            plt.show()
+
+    def test_plot_operator_result_three_argument_operator(self):
+
+        self.comp.operators["three_arg"] = lambda a, b, c: a + b + c
+
+        with self.assertRaises(RuntimeError):
+            res_op, res_prod = self.comp(*self.dat_real)
+            figs, axes = util.plot_operator_result(res_op)
+
+    @classmethod
+    def tearDownClass(cls):
+        if os.environ["COMPARATOR_TEST_PLOT"]:
+            input(">>> ")
 
 
 class TestNumpyEncoder(unittest.TestCase):
@@ -51,4 +79,6 @@ class TestNumpyEncoder(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger("matplotlib").setLevel(logging.ERROR)
     unittest.main()

@@ -17,3 +17,16 @@ format `ComparatorProductResult` objects as we please!
 - `util.corner_plot` not working.
 
 ### v0.7.0
+
+- Renamed `util.corner_plot` to `util.plot_operator_result`
+- Added the ability for `util.plot_operator_result` to plot data from an operator that
+takes a single argument. In this case, it doesn't actually create a corner plot,
+rather it's just a single column.
+- Added tests for new `util.plot_operator_result` functionality.
+- Got rid of unnecessary `copy` import in `single_domain.py`
+- Thinking about adding an `OperatorResult` object that contains some meta data
+about the operator result (is it cartesian or polar complex representation, for example).
+- Right now, when we supply complex data, the `SingleDomainComparator` object
+breaks the data into cartesian or polar representations. I'd like to be able
+to do operations on complex data as a whole. This would require a bit of work
+to overhaul. 
