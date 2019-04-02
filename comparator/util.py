@@ -98,6 +98,8 @@ def plot_operator_result(
                 sub_res_op = res_op[i]
                 for z in range(n_z):
                     ax = axes[z*rows + i]
+                    if res_op.labels is not None:
+                        ax.set_ylabel(res_op.labels[i])
                     if not (i == rows - 1 and z == n_z-1):
                         plt.setp(ax.get_xticklabels(), visible=False)
                     if sub_res_op is None:
@@ -112,8 +114,14 @@ def plot_operator_result(
                     sub_res_op = res_op[i][j]
                     for z in range(n_z):
                         ax = axes[(z*rows) + j][i]
+                        if res_op.labels is not None and i == rows-1:
+                            ax.yaxis.set_label_position("right")
+                            ax.set_ylabel(res_op.labels[j])
                         if not (j == rows - 1 and z == n_z-1):
                             plt.setp(ax.get_xticklabels(), visible=False)
+                        else:
+                            if res_op.labels is not None:
+                                ax.set_xlabel(res_op.labels[i])
                         if sub_res_op is None:
                             ax.set_axis_off()
                         else:

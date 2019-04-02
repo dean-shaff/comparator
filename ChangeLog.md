@@ -58,3 +58,7 @@ vectors as they progress through the `comparator` processing chain.
 - `SingleDomainComparator.__call__` now takes a `labels` keyword argument.
 - Changing the `domain` attribute of a `MultiDomainComparator` changes the
 operation domain for each of the constituent comparator objects.
+
+### v0.8.1
+
+- `util.plot_operator_result` now plots with labels.
