@@ -1,6 +1,9 @@
 import unittest
 
-from comparator.trackable_dict import TrackableDict
+from comparator.trackable import (
+    TrackableDict,
+    TrackableList
+)
 
 
 class Callback:
@@ -31,6 +34,20 @@ class TestTrackableDict(unittest.TestCase):
         self.assertTrue(callback.called_count == 2)
         self.assertTrue(callback.args[0] == ("person", 25))
         self.assertTrue(callback.args[1] == ("person", ))
+
+
+class TestTrackableList(unittest.TestCase):
+
+    def test_on(self):
+        callback = Callback()
+        d = TrackableList([0, 10, 10])
+        d.on(callback)
+        d[0] = 25
+        d[1]
+        self.assertTrue(callback.called)
+        self.assertTrue(callback.called_count == 2)
+        self.assertTrue(callback.args[0] == (0, 25))
+        self.assertTrue(callback.args[1] == (1, ))
 
 
 if __name__ == "__main__":

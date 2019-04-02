@@ -1,4 +1,4 @@
-__version__ = "0.7.3"
+__version__ = "0.8.0"
 
 from .single_domain import (
     SingleDomainComparator,
@@ -17,6 +17,10 @@ from .product_result import (
     ComparatorProductResult
 )
 
+from .operator_result import (
+    ComparatorOperatorResult
+)
+
 __all__ = [
     "SingleDomainComparator",
     "TimeDomainComparator",
@@ -25,5 +29,6 @@ __all__ = [
     "TimeFreqDomainComparator",
     "plot_operator_result",
     "NumpyEncoder",
-    "ComparatorProductResult"
+    "ComparatorProductResult",
+    "ComparatorOperatorResult"
 ]

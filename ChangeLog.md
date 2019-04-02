@@ -47,3 +47,14 @@ objects. We can now, in principle, encode any of numpy's basic int and float
 types.
 - Added tests in `test.test_util` to test for numpy int and float
 compatibability.
+
+### v0.8.0
+
+- Added an `ComparatorOperatorResult` object. This is a representation of the operator
+result. Supports Numpy-like indexing.
+- Added the ability to label `ComparatorOperatorResult` and `ComparatorProductResult`
+objects. This makes it a little easier to keep track of the progress of specific
+vectors as they progress through the `comparator` processing chain.
+- `SingleDomainComparator.__call__` now takes a `labels` keyword argument.
+- Changing the `domain` attribute of a `MultiDomainComparator` changes the
+operation domain for each of the constituent comparator objects.

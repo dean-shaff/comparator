@@ -6,8 +6,9 @@ import functools
 import numpy as np
 import scipy.signal
 
-from .trackable_dict import TrackableDict
+from .trackable import TrackableDict
 from .product_result import ComparatorProductResult
+from .operator_result import ComparatorOperatorResult
 
 vector_function = typing.Callable[[np.ndarray], np.ndarray]
 
@@ -43,7 +44,8 @@ class SingleDomainComparator:
         self._accumulate_prod = []
 
     def __call__(self,
-                 *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
+                 *arrays: typing.Tuple[np.ndarray],
+                 labels=None) -> typing.Tuple[list]:
         module_logger.debug(
             f"SingleDomainComparator.__call__: len(arrays): {len(arrays)}")
         arrays = self.transform(*arrays)
@@ -52,8 +54,10 @@ class SingleDomainComparator:
         for op_name in self._operators:
             op = self._operators[op_name]
             _res_op, _res_prod = self.get_operator_products(op, arrays)
-            res_op[op_name] = _res_op
-            res_prod[op_name] = ComparatorProductResult(_res_prod)
+            res_op[op_name] = ComparatorOperatorResult(
+                result=_res_op, labels=labels)
+            res_prod[op_name] = ComparatorProductResult(
+                products=_res_prod, labels=labels)
 
         return res_op, res_prod
 

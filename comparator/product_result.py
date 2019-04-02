@@ -6,17 +6,21 @@ __all__ = [
 
 
 class ComparatorProductResult:
-
-    def __init__(self, products: list = None):
+    """
+    This class represents the data returned from
+    """
+    def __init__(self, products: list = None, labels: list = None):
 
         if products is None:
             products = []
             product_names = []
         else:
             product_names = self.get_product_names(products)
+
         self._products = products
         self._product_names = product_names
         self._format_spec = ".4f"
+        self._labels = labels
 
     def get_product_names(self, products: list) -> list:
         if hasattr(products[0], "keys"):

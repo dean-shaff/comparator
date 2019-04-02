@@ -45,16 +45,27 @@ class MultiDomainComparator(SingleDomainComparator):
 
         return _on_change
 
-    def __call__(self, *args):
+    def __call__(self, *args, **kwargs):
         ret = []
         for domain_name in self._domains:
             domain = self._domains[domain_name]
-            ret.append(domain(*args))
+            ret.append(domain(*args, **kwargs))
         return ret
 
     def __getattr__(self, attr: str) -> SingleDomainComparator:
         if attr in self._domains:
             return self._domains[attr]
+
+    @property
+    def domain(self):
+        return self._operation_domain
+
+    @domain.setter
+    def domain(self, arr: list):
+        # call the super class's setter
+        super(MultiDomainComparator, self.__class__).domain.fset(self, arr)
+        for domain_name in self._domains:
+            self._domains[domain_name].domain = arr
 
 
 class TimeFreqDomainComparator(MultiDomainComparator):

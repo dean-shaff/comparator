@@ -38,6 +38,16 @@ class TestMultiDomainComparator(unittest.TestCase):
         ret = self.multi_domain_comparator(a, b, c)
         self.assertTrue(len(ret) == 2)
 
+    def test_domain(self):
+        comp = self.multi_domain_comparator
+        comp.domain = [0, 10]
+        self.assertTrue(comp._operation_domain.start == 0)
+        self.assertTrue(comp._operation_domain.stop == 10)
+        for name in comp._domains:
+            domain = comp._domains[name]
+            self.assertTrue(domain._operation_domain.start == 0)
+            self.assertTrue(domain._operation_domain.stop == 10)
+
 
 if __name__ == "__main__":
     unittest.main()
