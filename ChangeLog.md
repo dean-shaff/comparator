@@ -62,3 +62,8 @@ operation domain for each of the constituent comparator objects.
 ### v0.8.1
 
 - `util.plot_operator_result` now plots with labels.
+
+### v0.8.2
+
+- `util.plot_operator_result` takes `**kwargs`, which get passed to `plt.subplots`
+- `util.plot_operator_result` puts axis ylabels on right side.

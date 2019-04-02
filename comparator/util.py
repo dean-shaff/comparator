@@ -15,7 +15,8 @@ module_logger = logging.getLogger(__name__)
 
 def plot_operator_result(
     comparator_result: dict,
-    op_name: str = None
+    op_name: str = None,
+    **kwargs
 ) -> typing.Tuple[list, list]:
     """
     Create a plot of the operation result from comparator objects.
@@ -27,6 +28,7 @@ def plot_operator_result(
             applying comparator operators to some arrays. If
         op_name (str, optional): The name of a specific operation to plot.
             If provided, all other operations are ignored.
+        kwargs (dict): Passed to plt.subplots
     Returns:
         tuple: list of figures and list of axes
     """
@@ -43,13 +45,12 @@ def plot_operator_result(
             return get_subplot_dims(arr[0], res)
 
     def create_subplots(subplot_dims: list) -> tuple:
-
         if len(subplot_dims) == 2:
             rows, n_z = subplot_dims
-            fig, axes = plt.subplots(n_z*rows)
+            fig, axes = plt.subplots(n_z*rows, **kwargs)
         elif len(subplot_dims) == 3:
             rows, cols, n_z = subplot_dims
-            fig, axes = plt.subplots(n_z*rows, cols)
+            fig, axes = plt.subplots(n_z*rows, cols, **kwargs)
 
         if not hasattr(axes, "ndim"):
             axes = np.array([axes])
@@ -99,6 +100,7 @@ def plot_operator_result(
                 for z in range(n_z):
                     ax = axes[z*rows + i]
                     if res_op.labels is not None:
+                        ax.yaxis.set_label_position("right")
                         ax.set_ylabel(res_op.labels[i])
                     if not (i == rows - 1 and z == n_z-1):
                         plt.setp(ax.get_xticklabels(), visible=False)
