@@ -198,7 +198,7 @@ class TimeDomainComparator(SingleDomainComparator):
         # return a, np.roll(b, abs(offset))
 
 
-class FrequencyDomainComparator(TimeDomainComparator):
+class FrequencyDomainComparator(SingleDomainComparator):
 
     def __init__(self, name: str = "frequency", fft_size: int = 1024):
         super(FrequencyDomainComparator, self).__init__(

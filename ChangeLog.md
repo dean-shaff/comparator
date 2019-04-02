@@ -67,3 +67,8 @@ operation domain for each of the constituent comparator objects.
 
 - `util.plot_operator_result` takes `**kwargs`, which get passed to `plt.subplots`
 - `util.plot_operator_result` puts axis ylabels on right side.
+
+### v0.8.3
+
+- `FrequencyDomainComparator` doesn't attempt to time align data before
+transforming.
