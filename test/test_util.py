@@ -77,6 +77,20 @@ class TestNumpyEncoder(unittest.TestCase):
         test_dumps = json.dumps(test, cls=util.NumpyEncoder)
         self.assertTrue(test_dumps == expected_dumps)
 
+    def test_default_int(self):
+
+        test = {"obj": [np.int64(1), np.int32(1), np.int16(1), np.int8(1)]}
+        expected_dumps = "{\"obj\": [1, 1, 1, 1]}"
+        test_dumps = json.dumps(test, cls=util.NumpyEncoder)
+        self.assertTrue(test_dumps == expected_dumps)
+
+    def test_default_float(self):
+
+        test = {"obj": [np.float16(1), np.float32(1), np.float16(1)]}
+        expected_dumps = "{\"obj\": [1.0, 1.0, 1.0]}"
+        test_dumps = json.dumps(test, cls=util.NumpyEncoder)
+        self.assertTrue(test_dumps == expected_dumps)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

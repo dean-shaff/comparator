@@ -38,4 +38,12 @@ to overhaul.
 ### v0.7.2
 
 - Can now set the operation domain directly with a `slice` object.
-- Added unit test to check for setting the operation domain. 
+- Added unit test to check for setting the operation domain.
+
+### v0.7.3
+
+- Fixed bug in `NumpyEncoder` where we couldn't encode `numpy.float32`
+objects. We can now, in principle, encode any of numpy's basic int and float
+types.
+- Added tests in `test.test_util` to test for numpy int and float
+compatibability.

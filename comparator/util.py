@@ -134,9 +134,15 @@ def plot_operator_result(
 
 class NumpyEncoder(json.JSONEncoder):
 
+    int_types = (np.int64, np.int32, np.int16, np.int8)
+    float_types = (np.float64, np.float32, np.float16)
+
     def default(self, obj):
-        if isinstance(obj, np.int64):
+        if any([isinstance(obj, i) for i in self.int_types]):
             return int(obj)
+
+        if any([isinstance(obj, f) for f in self.float_types]):
+            return float(obj)
 
         if isinstance(obj, np.ndarray):
             return obj.tolist()
