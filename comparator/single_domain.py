@@ -188,8 +188,8 @@ class TimeDomainComparator(SingleDomainComparator):
         """
         Get the number of units of delay between a and b
         """
-        a = a / np.amax(a)
-        b = b / np.amax(b)
+        a = a / np.amax(np.abs(a))
+        b = b / np.amax(np.abs(b))
         xcorr = scipy.signal.fftconvolve(a, np.conj(b)[::-1], mode="full")
         mid_idx = int(xcorr.shape[0] // 2)
         max_arg = np.argmax(xcorr)

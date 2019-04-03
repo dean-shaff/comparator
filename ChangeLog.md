@@ -72,3 +72,8 @@ operation domain for each of the constituent comparator objects.
 
 - `FrequencyDomainComparator` doesn't attempt to time align data before
 transforming.
+
+### v0.8.4
+
+- Attempting to fix bug in `TimeDomainComparator.get_time_delay` where finding
+the maximum of a complex array is at best ambiguous.  
