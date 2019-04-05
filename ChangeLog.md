@@ -76,4 +76,10 @@ transforming.
 ### v0.8.4
 
 - Attempting to fix bug in `TimeDomainComparator.get_time_delay` where finding
-the maximum of a complex array is at best ambiguous.  
+the maximum of a complex array is at best ambiguous.
+
+
+### v0.9.0
+
+- When using complex data, instead of operating on complex components independently,
+we operate them as a whole, only separating at the end.
