@@ -12,6 +12,11 @@ __all__ = [
 
 module_logger = logging.getLogger(__name__)
 
+_default_ylabels = {
+    "cartesian": ["Real", "Imaginary"],
+    "polar": ["Magnitude", "Phase"]
+}
+
 
 def plot_operator_result(
     comparator_result: dict,
@@ -32,7 +37,9 @@ def plot_operator_result(
     Returns:
         tuple: list of figures and list of axes
     """
-    fig_objs, axes_objs = [], []
+    fig_objs, axes_objs = {}, {}
+    complex_representation = list(comparator_result.values())[0].representation
+    complex_ylabels = _default_ylabels[complex_representation]
 
     def get_subplot_dims(arr: list, res: list = None) -> list:
         if res is None:
@@ -71,7 +78,7 @@ def plot_operator_result(
                     right=False
                 )
                 ax.grid(False)
-                ax.set_ylabel(f"Complex component {z+1}")
+                ax.set_ylabel(f"{complex_ylabels[z]}")
 
         return fig, axes
 
@@ -129,8 +136,8 @@ def plot_operator_result(
                         else:
                             ax.plot(sub_res_op[z])
 
-        fig_objs.append(fig)
-        axes_objs.append(axes)
+        fig_objs[op_name] = fig
+        axes_objs[op_name] = axes
 
     if op_name is None:
         for op_name in comparator_result:

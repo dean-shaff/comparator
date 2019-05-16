@@ -12,11 +12,12 @@ class ComparatorOperatorResult:
     A convenient represention for the data returned
     by calling operators on data in a SingleDomainComparator object.
     """
-    def __init__(self, result=None, labels=None):
+    def __init__(self, result=None, labels=None, representation="cartesian"):
         if result is None:
             result = []
         self._result = result
         self._labels = labels
+        self.representation = representation
 
     def __getitem__(self, item):
         """

@@ -55,7 +55,8 @@ class SingleDomainComparator:
             op = self._operators[op_name]
             _res_op, _res_prod = self.get_operator_products(op, arrays)
             res_op[op_name] = ComparatorOperatorResult(
-                result=_res_op, labels=labels)
+                result=_res_op, labels=labels,
+                representation=self._current_representation)
             res_prod[op_name] = ComparatorProductResult(
                 products=_res_prod, labels=labels)
 

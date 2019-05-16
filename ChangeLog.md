@@ -83,3 +83,22 @@ the maximum of a complex array is at best ambiguous.
 
 - When using complex data, instead of operating on complex components independently,
 we operate them as a whole, only separating at the end.
+
+### v0.9.1
+
+- util.plot_operator_result returns tuple of dictionaries instead of tuple of
+lists.
+- util.plot_operator_result puts correct complex representation as ylabels, eg
+if we're using cartesian, then "Real" and "Imaginary" are the ylabels.
+
+### v0.10.0
+
+TODO
+- Specify a domain as a fraction of the total domain:
+```python
+comp = comparator.SingleDomainComparator()
+
+comp.domain = [0, 0.1]
+```
+Here, `comparator` would automatically know to only analyze the first 10th of
+the data.
