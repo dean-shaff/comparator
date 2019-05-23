@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "comparator"
-version = "0.9.1"
+version = "0.10.0"
 description = ""
 authors = ["Dean Shaff <dshaff@swin.edu.au>"]
 

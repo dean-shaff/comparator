@@ -91,53 +91,29 @@ class SingleDomainComparator:
         op: typing.Callable,
         arrays: typing.Tuple[np.ndarray]
     ) -> typing.Tuple[list]:
-
+        """
+        Apply an operator to arrays. Get products from the result of the
+        operator.
+        """
         res_op = []
         res_prod = []
-        iscomplex = np.iscomplexobj(arrays[0])
-        if iscomplex:
-            rep = self._representations[self._current_representation]
-        else:
-            rep = (lambda a: a, )
-        n_rep = len(rep)
 
         def _get_operator_products(op, arrays, res_op, res_prod):
             for arr in arrays:
-                # new_op = functools.partial(op, arr)
                 sig_op = inspect.signature(op)
                 if len(sig_op.parameters) > 1:
                     res_op.append([])
                     res_prod.append([])
                     new_op = functools.partial(op, arr)
-                    # new_ops = [functools.partial(ops[j], rep[j](arr))
-                    #            for j in range(n_rep)]
                     _get_operator_products(
                         new_op, arrays, res_op[-1], res_prod[-1])
                 else:
-                    res_op.append([rep[j](op(arr)) for j in range(n_rep)])
-                    res_prod.append([self.get_products(a) for a in res_op[-1]])
+                    res_op.append(op(arr))
+                    res_prod.append(self.get_products(res_op[-1]))
 
         _get_operator_products(
             op, arrays, res_op, res_prod)
 
-
-        # def _get_operator_products(ops, arrays, res_op, res_prod):
-        #     for arr in arrays:
-        #         # new_op = functools.partial(op, arr)
-        #         sig_op = inspect.signature(ops[0])
-        #         if len(sig_op.parameters) > 1:
-        #             res_op.append([])
-        #             res_prod.append([])
-        #             new_ops = [functools.partial(ops[j], rep[j](arr))
-        #                        for j in range(n_rep)]
-        #             _get_operator_products(
-        #                 new_ops, arrays, res_op[-1], res_prod[-1])
-        #         else:
-        #             res_op.append([ops[j](rep[j](arr)) for j in range(n_rep)])
-        #             res_prod.append([self.get_products(a) for a in res_op[-1]])
-        #
-        # _get_operator_products(
-        #     [op for i in range(n_rep)], arrays, res_op, res_prod)
         return res_op, res_prod
 
     def get_products(self, a: np.ndarray) -> dict:

@@ -1,13 +1,58 @@
+import logging
 import typing
 
 __all__ = [
     "ComparatorProductResult"
 ]
 
+module_logger = logging.getLogger(__name__)
+
 
 class ComparatorProductResult:
     """
-    This class represents the data returned from
+    This class represents the products returned from each operator.
+
+    A "product" can be any mapping from a vector to scalar, or tuple of
+    scalars. For example, I could have a mean be something like the following:
+
+    comp.products["mean"] = lambda a: (np.mean(a.real), np.mean(a.imag))
+
+    We can access ComparatorProductResult using a variety of syntaxes:
+
+    ..code-block:: python
+
+        >>> product_result[0]["mean"] # get the mean of the first operator result
+        >>> product_result["mean"]
+
+
+    Internally, a ComparatorProductResult is a nest list of dictionaries.
+    For a simple one to one operator, this looks pretty simple:
+
+
+    ..code-block:: python
+
+        >>> product_result = ComparatorProductResult(products=[
+            {"mean": [0.5], "max": [1.0], "sum": [2.0]},
+            {"mean": [0.4], "max": [1.0], "sum": [1.8]}
+        ])
+
+    For two to one operators, the representation is a nested list:
+
+    ..code-block:: python
+
+        >>> product_result = ComparatorProductResult(products=[
+            [
+                {"mean": [0.5], "max": [1.0], "sum": [2.0]},
+                {"mean": [0.4], "max": [1.0], "sum": [1.8]}
+            ],
+            [
+                {"mean": [0.5], "max": [1.0], "sum": [2.0]},
+                {"mean": [0.4], "max": [1.0], "sum": [1.8]}
+            ]
+        ])
+
+
+
     """
     def __init__(self, products: list = None, labels: list = None):
 
@@ -23,30 +68,29 @@ class ComparatorProductResult:
         self._labels = labels
 
     def get_product_names(self, products: list) -> list:
-        if hasattr(products[0], "keys"):
-            return list(products[0].keys())
+        module_logger.debug(
+            f"ComparatorProductResult.get_product_names: products={products}")
+        if hasattr(products, "keys"):
+            return list(products.keys())
         else:
             return self.get_product_names(products[0])
 
     def __getitem__(self, item: typing.Any):
         if hasattr(item, "split"):  # str like
             res = []
-            complex_dim = self.complex_dim  # requires a calculation everytime
 
             def _get_item(products, res):
                 if products is None:
                     res.append(None)
-                elif hasattr(products[0], "keys"):
-                    sub_item = [{item: products[z][item]}
-                                for z in range(complex_dim)]
-                    res.append(sub_item)
+                elif hasattr(products, "keys"):
+                    res.append(products[item])
                 else:
                     res.append([])
                     for i in range(len(self)):
                         _get_item(products[i], res[-1])
 
             _get_item(self._products, res)
-            return ComparatorProductResult(res[0])
+            return res[0]
         elif hasattr(item, "index"):  # tuple object
             res = self._products[item[0]]
             for i in item[1:]:
@@ -58,41 +102,8 @@ class ComparatorProductResult:
             return self._products[item]
 
     def __iter__(self):
-
-        item = self._product_names[0]
-        complex_dim = self.complex_dim
-
-        def single_row(row):
-            # print(row)
-            return [[row[j][z][item]
-                    for z in range(complex_dim)]
-                    if row[j] is not None else None
-                    for j in range(len(row))]
-
-        def _iter(products):
-            if products[0] is None:
-                yield single_row(products)
-            elif hasattr(products[0][0], "keys"):
-                yield single_row(products)
-            else:
-                for i in range(len(self)):
-                    for val in _iter(products[i]):
-                        yield val
-
-        if len(self._product_names) == 1:
-            # this is the base case of single dimensional data
-            if hasattr(self._products[0][0], "keys"):
-                for val in single_row(self._products):
-                    yield val
-            # higher dimensional data gets passed to _iter
-            else:
-                for val in _iter(self._products):
-                    yield val
-
-        else:
-            raise ValueError(("__iter__ is ill defined for "
-                              "ComparatorProductResult object "
-                              "with multiple products"))
+        for name in self._product_names:
+            yield (name, self[name])
 
     def __len__(self) -> int:
         return len(self._products)
@@ -109,57 +120,38 @@ class ComparatorProductResult:
 
     def __str__(self) -> str:
 
-        complex_dim = self.complex_dim
-        len_self = len(self)
+        def stringify(sub_product):
+            res = []
 
-        res = {name: [] for name in self._product_names}
-
-        def _iter(product):
-            if hasattr(product[0][0], "keys"):
-                for name in self._product_names:
-                    res[name].append(
-                        ", ".join(
-                            ["".join(["[", ",".join(
-                                [f'{product[j][z][name]:{self._format_spec}}'
-                                 for z in range(complex_dim)]
-                              ), "]"])
-                             for j in range(len_self)]
-                        )
-                    )
-                    res[name].append("\n")
-            else:
-                for i in range(len_self):
-                    _iter(product[i])
-
-        _iter(self._products)
+            def _iter(sub_product):
+                if hasattr(sub_product[0], "__iter__"):
+                    res.append("[")
+                    for l in sub_product[:-1]:
+                        _iter(l)
+                        res.append("\n")
+                    _iter(sub_product[-1])
+                    res.append("]\n")
+                else:
+                    res.append("".join(
+                        ["[",
+                            ", ".join(
+                                [f"{val:{self._format_spec}}"
+                                 for val in sub_product]
+                            ),
+                         "]"]
+                    ))
+            _iter(sub_product)
+            return "".join(res)
 
         res_str = []
-        for name in self._product_names:
-            res_str.append(name)
+        for key, val in self:
+            res_str.append(key)
             res_str.append("\n")
-            res_str.append("".join(res[name]))
-        res_str = "".join(res_str)
-        return res_str
+            res_str.append(stringify(val))
+
+        return "".join(res_str)
+
 
     @property
     def products(self) -> list:
         return self._products
-
-    @property
-    def complex_dim(self) -> int:
-
-        def _get_complex_dim(products):
-            if hasattr(products[0], "keys"):
-                return len(products)
-            else:
-                return _get_complex_dim(products[0])
-
-        return _get_complex_dim(self._products)
-
-    @property
-    def iscomplex(self) -> bool:
-        return True if self.complex_dim == 2 else False
-
-    @property
-    def isreal(self) -> bool:
-        return not self.iscomplex

@@ -93,6 +93,11 @@ if we're using cartesian, then "Real" and "Imaginary" are the ylabels.
 
 ### v0.10.0
 
+- I got tired of trying to split things into different representations of complex
+numbers. Its impossible to keep track of. If a number is complex, leave it complex.
+
+### v0.10.0
+
 TODO
 - Specify a domain as a fraction of the total domain:
 ```python
