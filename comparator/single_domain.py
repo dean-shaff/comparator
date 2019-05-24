@@ -11,6 +11,7 @@ from .product_result import ComparatorProductResult
 from .operator_result import ComparatorOperatorResult
 
 vector_function = typing.Callable[[np.ndarray], np.ndarray]
+domain_type = typing.Union[slice, list, tuple]
 
 __all__ = [
     "SingleDomainComparator",
@@ -31,17 +32,9 @@ class SingleDomainComparator:
             "forward": forward_transform,
             "inverse": inverse_transform
         }
-        self._operation_domain = slice(0, None)  # get whole array
+        self._operation_domain = lambda size: slice(0, None)  # get whole array
         self._operators = TrackableDict({})
         self._products = TrackableDict({})
-        self._accumulator = lambda a: a
-        self._representations = TrackableDict({
-            "cartesian": (np.real, np.imag),
-            "polar": (np.abs, np.angle)
-        })
-        self._current_representation = "cartesian"
-        self._accumulate_op = []
-        self._accumulate_prod = []
 
     def __call__(self,
                  *arrays: typing.Tuple[np.ndarray],
@@ -55,22 +48,11 @@ class SingleDomainComparator:
             op = self._operators[op_name]
             _res_op, _res_prod = self.get_operator_products(op, arrays)
             res_op[op_name] = ComparatorOperatorResult(
-                result=_res_op, labels=labels,
-                representation=self._current_representation)
+                result=_res_op, labels=labels, name=op_name)
             res_prod[op_name] = ComparatorProductResult(
                 products=_res_prod, labels=labels)
 
         return res_op, res_prod
-
-    def accumulate(self,
-                   *arrays: typing.Tuple[np.ndarray]) -> typing.Tuple[list]:
-        module_logger.debug(
-            f"SingleDomainComparator.accumulate")
-        res_op, res_prod = self.__call__(*arrays)
-        self._accumulate_op.append(res_op)
-        self._accumulate_prod.append(res_prod)
-
-        return self._accumulate_op, self._accumulate_prod
 
     def transform(self, *arrays: typing.Tuple[np.ndarray]) -> list:
         module_logger.debug(
@@ -78,7 +60,7 @@ class SingleDomainComparator:
         min_size = min([a.shape[0] for a in arrays])
         transformed = []
         for arr in arrays:
-            arr = arr[:min_size][self._operation_domain]
+            arr = arr[:min_size][self._operation_domain(min_size)]
             if self._transforms["forward"] is not None:
                 transformed.append(self._transforms["forward"](arr))
             else:
@@ -123,11 +105,6 @@ class SingleDomainComparator:
             res_prod[prod_name] = prod(a)
         return res_prod
 
-    def __getattr__(self, attr: str):
-        if attr in self._representations:
-            self._current_representation = attr
-            return self
-
     @property
     def name(self):
         return self._name
@@ -141,27 +118,21 @@ class SingleDomainComparator:
         return self._products
 
     @property
-    def accumulator(self):
-        return self._accumulator
-
-    @property
     def domain(self):
         return self._operation_domain
 
     @domain.setter
-    def domain(self, arr: list):
-        if hasattr(arr, "__iter__"):
-            self._operation_domain = slice(*arr)
-        elif hasattr(arr, 'start'):  # means we're passing a slice object
-            self._operation_domain = arr
-
-    @property
-    def accumulate_prod(self):
-        return self.accumulate_prod
-
-    @property
-    def accumulate_op(self):
-        return self._accumulate_op
+    def domain(self, new_domain: domain_type):
+        if hasattr(new_domain, "__iter__"):  # means we're passing a list
+            if any([isinstance(v, float) for v in new_domain]):
+                self._operation_domain = \
+                    lambda a: slice(*[int(v*a) for v in new_domain])
+            else:
+                self._operation_domain = lambda a: slice(*new_domain)
+        elif hasattr(new_domain, 'start'):  # means we're passing a slice
+            self._operation_domain = lambda a: new_domain
+        elif callable(new_domain):
+            self._operation_domain = new_domain
 
 
 class TimeDomainComparator(SingleDomainComparator):

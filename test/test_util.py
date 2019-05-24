@@ -30,6 +30,7 @@ class TestPlotOperatorResult(unittest.TestCase):
                             for i in range(self.n_plots)]
         self.labels = [str(i) for i in range(self.n_plots)]
 
+    @unittest.skip("")
     def test_plot_operator_result_one_argument_operator(self):
         self.comp.operators["this"] = lambda a: a
 
@@ -42,16 +43,17 @@ class TestPlotOperatorResult(unittest.TestCase):
         if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.show()
 
-
     def test_plot_operator_result_two_argument_operator(self):
 
         self.comp.operators["diff"] = lambda a, b: a - b
 
         res_op, res_prod = self.comp(*self.dat_real, labels=self.labels)
         figs, axes = util.plot_operator_result(res_op)
+        figs, axes = util.plot_operator_result(res_op, corner_plot=True)
 
         res_op, res_prod = self.comp(*self.dat_complex, labels=self.labels)
         figs, axes = util.plot_operator_result(res_op)
+        figs, axes = util.plot_operator_result(res_op, corner_plot=True)
 
         if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.show()

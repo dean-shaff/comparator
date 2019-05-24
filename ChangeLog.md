@@ -95,15 +95,30 @@ if we're using cartesian, then "Real" and "Imaginary" are the ylabels.
 
 - I got tired of trying to split things into different representations of complex
 numbers. Its impossible to keep track of. If a number is complex, leave it complex.
+- I changed the way ComparatorProductResult objects are indexed. I got tired of
+writing things like `list(res_prod[0, 1])['mean']`. Instead we can just do
+`res_prod["mean"][0][1]` or even `res_prod[0, 1]["mean"]`.
+- We can produce a corner plot with `plot_operator_result`. This only
+make sense for symetric operators, trivially non symetric operators (like the
+difference). For some operators, like cross correlation, corner plots may not
+be necessary.
+- `plot_operator_result` takes an optional complex representation, which
+handles complex data, if applicable.
+- `plot_operator_result` can work with single operator result objects. We can
+do something like the following:
 
-### v0.10.0
-
-TODO
-- Specify a domain as a fraction of the total domain:
 ```python
-comp = comparator.SingleDomainComparator()
+>>> res_op, res_prod = comp(*data)
+>>> util.plot_operator_result(res_op["diff"])
+```
+
+- The `SingleDomainComparator` supports specfying the domain as a fraction of
+the total domain:
+```python
+comp = comparator.SingleDomainComparator("domain_name")
 
 comp.domain = [0, 0.1]
 ```
 Here, `comparator` would automatically know to only analyze the first 10th of
-the data.
+the data. This is useful when we don't know or don't care about the length of
+the input a priori.

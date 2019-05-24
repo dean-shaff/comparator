@@ -15,8 +15,8 @@ mypy = "^0.670.0"
 [tool.poetry.dev-dependencies]
 matplotlib = "^3.0"
 
-[tool.poetry.scripts]
-test = "python -m unittest"
+# [tool.poetry.scripts]
+# comparator-test = "poetry run python -m unittest"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -12,12 +12,12 @@ class ComparatorOperatorResult:
     A convenient represention for the data returned
     by calling operators on data in a SingleDomainComparator object.
     """
-    def __init__(self, result=None, labels=None, representation="cartesian"):
+    def __init__(self, result=None, labels=None, name=None):
         if result is None:
             result = []
         self._result = result
         self._labels = labels
-        self.representation = representation
+        self._name = name
 
     def __getitem__(self, item):
         """
@@ -66,6 +66,25 @@ class ComparatorOperatorResult:
     def __len__(self):
         return len(self._result)
 
+    def __str__(self):
+        if self.labels is None:
+            return self._result.__str__()
+        else:
+            res_str = []
+            for label in self.labels:
+                res_str.append(label)
+                res_str.append("\n")
+                res_str.append(self[label].__str__())
+            return "".join(res_str)
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
     @property
     def labels(self):
         return self._labels
@@ -94,22 +113,3 @@ class ComparatorOperatorResult:
     @property
     def result(self):
         return self._result
-
-    @property
-    def complex_dim(self) -> int:
-
-        def _get_complex_dim(result):
-            if not hasattr(result[0], "__iter__"):
-                return len(result)
-            else:
-                return _get_complex_dim(result[0])
-
-        return _get_complex_dim(self._result)
-
-    @property
-    def iscomplex(self) -> bool:
-        return True if self.complex_dim == 2 else False
-
-    @property
-    def isreal(self) -> bool:
-        return not self.iscomplex

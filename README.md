@@ -38,13 +38,15 @@ comp = TimeFreqDomainComparator()
 comp.freq.domain = [0, 2**15]
 # we can also set the domain with a slice object:
 comp.freq.domain = slice(0, None)
+# we can also set the domain to a fraction of the size of the input arrays:
+comp.freq.domain = [0.1, 0.8]
 # Alternatively, do the following:
 comp.freq.set_fft_size(2**15)
 
 # operators can map from any number of inputs to a single output.
 # Its convenient to operate on the input arrays themselves, hence 'this'
 comp.operators["this"] = lambda a: a
-comp.operators["diff"] = lambda a, b: np.abs(a - b)
+comp.operators["diff"] = lambda a, b: a - b
 comp.products["mean"] = np.mean
 # only the time domain will have the cross correlation ("xcorr") operator
 comp.time.operators["xcorr"] = lambda a, b: scipy.signal.fftconvolve(a, b.conj)
@@ -63,7 +65,7 @@ plt.show()
 
 # Instead of calling the Comparator object itself, we could get something
 # specific from each of the subdomains:
-comp.freq.polar(a, b, c)
+comp.freq(a, b, c)
 comp.freq(a, b, c)
 comp.time(a, b)
 ```

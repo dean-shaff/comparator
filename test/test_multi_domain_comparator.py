@@ -40,13 +40,14 @@ class TestMultiDomainComparator(unittest.TestCase):
 
     def test_domain(self):
         comp = self.multi_domain_comparator
-        comp.domain = [0, 10]
-        self.assertTrue(comp._operation_domain.start == 0)
-        self.assertTrue(comp._operation_domain.stop == 10)
+        n = 100
+        comp.domain = [0, n]
+        self.assertTrue(comp._operation_domain(n).start == 0)
+        self.assertTrue(comp._operation_domain(n).stop == n)
         for name in comp._domains:
             domain = comp._domains[name]
-            self.assertTrue(domain._operation_domain.start == 0)
-            self.assertTrue(domain._operation_domain.stop == 10)
+            self.assertTrue(domain._operation_domain(n).start == 0)
+            self.assertTrue(domain._operation_domain(n).stop == n)
 
 
 if __name__ == "__main__":

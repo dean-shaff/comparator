@@ -21,7 +21,6 @@ class TestComparatorProductResult(unittest.TestCase):
         cls.res_single = ComparatorProductResult(test_data["this"])
         cls.res_double = ComparatorProductResult(test_data["diff"])
 
-    @unittest.skip("")
     def test_contains(self):
         self.assertTrue("argmax" in self.res_double)
         self.assertTrue("max_power" in self.res_double)
