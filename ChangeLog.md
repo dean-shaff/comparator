@@ -122,3 +122,8 @@ comp.domain = [0, 0.1]
 Here, `comparator` would automatically know to only analyze the first 10th of
 the data. This is useful when we don't know or don't care about the length of
 the input a priori.
+
+### v0.10.1
+
+- `ComparatorProductResult` objects didn't print out correctly.
+- fixed bug in `ComparatorProductResult.__len__`

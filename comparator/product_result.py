@@ -86,7 +86,7 @@ class ComparatorProductResult:
                     res.append(products[item])
                 else:
                     res.append([])
-                    for i in range(len(self)):
+                    for i in range(len(self._products)):
                         _get_item(products[i], res[-1])
 
             _get_item(self._products, res)
@@ -106,7 +106,7 @@ class ComparatorProductResult:
             yield (name, self[name])
 
     def __len__(self) -> int:
-        return len(self._products)
+        return len(self._product_names)
 
     def __contains__(self, item) -> bool:
         if item in self._product_names:
@@ -144,13 +144,14 @@ class ComparatorProductResult:
             return "".join(res)
 
         res_str = []
-        for key, val in self:
+        for i, (key, val) in enumerate(self):
             res_str.append(key)
             res_str.append("\n")
             res_str.append(stringify(val))
+            if i != len(self) - 1:
+                res_str.append("\n")
 
         return "".join(res_str)
-
 
     @property
     def products(self) -> list:
