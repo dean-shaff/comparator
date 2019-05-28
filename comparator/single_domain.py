@@ -5,6 +5,7 @@ import functools
 
 import numpy as np
 import scipy.signal
+import scipy.fftpack
 
 from .trackable import TrackableDict
 from .product_result import ComparatorProductResult
@@ -173,10 +174,10 @@ class FrequencyDomainComparator(SingleDomainComparator):
             name=name,
         )
         self._transforms = {
-            "forward": np.fft.fft,
-            "inverse": np.fft.ifft
+            "forward": scipy.fftpack.fft,
+            "inverse": scipy.fftpack.ifft
         }
-        self._operator_domain = slice(0, fft_size)
+        self.domain = slice(0, fft_size)
 
     def set_fft_size(self, fft_size: int):
-        self._operator_domain = slice(0, fft_size)
+        self.domain = slice(0, fft_size)

@@ -26,6 +26,13 @@ _complex_rep_type = typing.Union[
     str, typing.Tuple[typing.Callable, typing.List]]
 
 
+def _ensure_ndarray(l):
+    if not hasattr(l, "ndim"):
+        return np.array([l])
+    else:
+        return l
+
+
 def plot_operator_result(
     comparator_result: typing.Any,
     complex_rep: _complex_rep_type = "cartesian",
@@ -88,15 +95,16 @@ def plot_operator_result(
         if len(subplot_dims) == 2:
             rows, n_z = subplot_dims
             fig, axes = plt.subplots(n_z*rows, **subplot_kwargs)
+            axes = _ensure_ndarray(axes)
+
         elif len(subplot_dims) == 3:
             rows, cols, n_z = subplot_dims
             if corner_plot:
                 rows -= 1
                 cols -= 1
             fig, axes = plt.subplots(n_z*rows, cols, **subplot_kwargs)
-
-        if not hasattr(axes, "ndim"):
-            axes = np.array([axes])
+            axes = _ensure_ndarray(axes)
+            axes = axes.reshape((n_z*rows, cols))
 
         for ax in axes.flatten():
             ax.tick_params(axis='both', which='major', labelsize=6)
@@ -122,9 +130,11 @@ def plot_operator_result(
         op_name = res_op.name
         if op_name is None:
             op_name = ""
-        module_logger.debug(f"corner_plot: plotting op {op_name}")
+        module_logger.debug((f"{__name__}.plot_operator_result: "
+                             f"plotting op {op_name}"))
 
         subplot_dims = get_subplot_dims(res_op)
+
         if len(subplot_dims) > 3:
             msg = (f"{__name__}.plot_operator_result doesn't support "
                    "operators that take more than two arguments")
@@ -135,11 +145,10 @@ def plot_operator_result(
         if subplot_dims[-1] == 2:
             rep = complex_rep
 
-        module_logger.debug((f"corner_plot: op {op_name} has "
-                             f"{subplot_dims} dims"))
+        module_logger.debug((f"{__name__}.plot_operator_result: "
+                             f"op {op_name} subplot_dims={subplot_dims}"))
 
         fig, axes = create_subplots(subplot_dims)
-
         fig.suptitle(op_name)
 
         if len(subplot_dims) == 2:

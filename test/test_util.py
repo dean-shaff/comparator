@@ -55,6 +55,10 @@ class TestPlotOperatorResult(unittest.TestCase):
         figs, axes = util.plot_operator_result(res_op)
         figs, axes = util.plot_operator_result(res_op, corner_plot=True)
 
+        res_op, res_prod = self.comp(*self.dat_complex[:2], labels=self.labels)
+        figs, axes = util.plot_operator_result(res_op)
+        figs, axes = util.plot_operator_result(res_op, corner_plot=True)
+
         if os.environ.get("COMPARATOR_TEST_PLOT", None):
             plt.show()
 

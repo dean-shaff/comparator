@@ -127,3 +127,10 @@ the input a priori.
 
 - `ComparatorProductResult` objects didn't print out correctly.
 - fixed bug in `ComparatorProductResult.__len__`
+
+### v0.10.2
+
+- frequency domain comparator uses `scipy.fftpack` instead of `numpy.fft`
+- fixed bug in frequency domain comparator.
+- fixed bug in corner plot where it wouldn't work if two arrays were being
+operated on.
