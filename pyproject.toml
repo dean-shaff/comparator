@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "comparator"
-version = "0.10.2"
+version = "0.10.3"
 description = ""
 authors = ["Dean Shaff <dshaff@swin.edu.au>"]
 
@@ -11,12 +11,7 @@ python = "^3.6"
 scipy = "^1.2"
 numpy = "^1.16"
 mypy = "^0.670.0"
-
-[tool.poetry.dev-dependencies]
 matplotlib = "^3.0"
-
-# [tool.poetry.scripts]
-# comparator-test = "poetry run python -m unittest"
 
 [build-system]
 requires = ["poetry>=0.12"]

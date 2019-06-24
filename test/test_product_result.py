@@ -103,8 +103,8 @@ class TestComparatorProductResult(unittest.TestCase):
         "{:.4e}".format(self.res_single)
 
     def test_len(self):
-        self.assertTrue(len(self.res_double) == 3)
-        self.assertTrue(len(self.res_single) == 3)
+        self.assertTrue(len(self.res_double) == 4)
+        self.assertTrue(len(self.res_single) == 4)
 
 
 if __name__ == "__main__":

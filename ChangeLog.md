@@ -134,3 +134,8 @@ the input a priori.
 - fixed bug in frequency domain comparator.
 - fixed bug in corner plot where it wouldn't work if two arrays were being
 operated on.
+
+### v0.10.3
+
+- made matplotlib a hard dependency in pyproject.toml.
+- fixed tests to match new API

@@ -79,11 +79,12 @@ class TestSingleDomainComparator(unittest.TestCase):
 
         def test_res(self, comparator_result_tuple, nelem, iscomplex):
             self.assertTrue(isinstance(comparator_result_tuple, tuple))
-            for obj in comparator_result_tuple:
-                self.assertTrue("diff" in obj)
-                self.assertTrue(len(obj["diff"]) == nelem)
-                self.assertTrue(len(obj["diff"][0]) == nelem)
             res_op, res_prod = comparator_result_tuple
+            self.assertTrue(len(res_op["diff"]) == nelem)
+            self.assertTrue(len(res_op["diff"][0]) == nelem)
+            self.assertTrue(len(res_prod["diff"]) == 1)  # just have the mean
+            self.assertTrue(len(res_prod["diff"]["mean"]) == nelem)
+            self.assertTrue(len(res_prod["diff"][0]) == nelem)
             self.assertTrue(
                 np.iscomplexobj(res_op["diff"][0]) == iscomplex)
             self.assertTrue(
