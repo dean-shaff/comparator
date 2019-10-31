@@ -139,3 +139,7 @@ operated on.
 
 - made matplotlib a hard dependency in pyproject.toml.
 - fixed tests to match new API
+
+### v0.10.4
+
+- got rid of mypy dependency

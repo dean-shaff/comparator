@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "comparator"
-version = "0.10.3"
+version = "0.10.4"
 description = ""
 authors = ["Dean Shaff <dshaff@swin.edu.au>"]
 
@@ -10,7 +10,6 @@ readme = 'README.md'
 python = "^3.6"
 scipy = "^1.2"
 numpy = "^1.16"
-mypy = "^0.670.0"
 matplotlib = "^3.0"
 
 [build-system]
